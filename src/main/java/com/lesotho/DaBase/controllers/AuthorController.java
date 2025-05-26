@@ -1,14 +1,34 @@
 package com.lesotho.DaBase.controllers;
 
 
-import com.lesotho.DaBase.domain.Author;
+import com.lesotho.DaBase.domain.dto.AuthorDto;
+import com.lesotho.DaBase.domain.entities.AuthorEntity;
+import com.lesotho.DaBase.mappers.Mapper;
+import com.lesotho.DaBase.services.AuthorsService;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 public class AuthorController {
 
+    private final AuthorsService authorsService;
+
+    private Mapper<AuthorEntity, AuthorDto> authorMapper;
+
+
+    public AuthorController(AuthorsService authorsService, Mapper<AuthorEntity, AuthorDto> authorMapper) {
+        this.authorsService = authorsService;
+        this.authorMapper = authorMapper;
+    }
+
+
     @PostMapping(path = "/authors")
-    public Author createAuthor
+    public AuthorDto createAuthor(@RequestBody AuthorDto authorDto) {
+        AuthorEntity authorEntity = authorMapper.mapFrom(authorDto);
+        AuthorEntity author = authorsService.createAuthor(authorEntity);
+        return authorMapper.mapTo(author);
+    }
+
 
 }

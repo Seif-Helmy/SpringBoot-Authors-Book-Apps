@@ -1,4 +1,4 @@
-package com.lesotho.DaBase.domain;
+package com.lesotho.DaBase.domain.entities;
 
 
 import jakarta.persistence.*;
@@ -11,7 +11,7 @@ import lombok.*;
 @Table(name = "authors")
 @Data
 @Builder
-public class Author {
+public class AuthorEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "author_id_seq")
