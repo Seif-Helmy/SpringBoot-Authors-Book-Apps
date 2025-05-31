@@ -2,14 +2,18 @@ package com.lesotho.DaBase.controllers;
 
 
 import com.lesotho.DaBase.domain.dto.AuthorDto;
+import com.lesotho.DaBase.domain.dto.BookDto;
 import com.lesotho.DaBase.domain.entities.AuthorEntity;
+import com.lesotho.DaBase.domain.entities.BookEntity;
 import com.lesotho.DaBase.mappers.Mapper;
 import com.lesotho.DaBase.services.AuthorsService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 @RestController
 public class AuthorController {
@@ -30,6 +34,23 @@ public class AuthorController {
         AuthorEntity authorEntity = authorMapper.mapFrom(authorDto);
         AuthorEntity author = authorsService.createAuthor(authorEntity);
         return new ResponseEntity<>(authorMapper.mapTo(author), HttpStatus.CREATED);
+    }
+
+    @GetMapping(path = "/authors")
+    public List<AuthorDto> listAuthors() {
+        List<AuthorEntity> authors = authorsService.findAll();
+        return authors.stream().map(authorMapper::mapTo).collect(Collectors.toList());
+    }
+
+    @GetMapping(path = "/authors/{id}")
+    public ResponseEntity<AuthorDto> getAuthor(@PathVariable("id") Long id) {
+        Optional<AuthorEntity> authorEntity = authorsService.findOne(id);
+
+        return authorEntity.map(author -> {
+            AuthorDto responseAuthor = authorMapper.mapTo(author);
+            return new ResponseEntity<>(responseAuthor, HttpStatus.OK);
+        }).orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
+
     }
 
 
