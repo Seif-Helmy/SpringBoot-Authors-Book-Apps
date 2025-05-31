@@ -5,6 +5,8 @@ import com.lesotho.DaBase.domain.dto.AuthorDto;
 import com.lesotho.DaBase.domain.entities.AuthorEntity;
 import com.lesotho.DaBase.mappers.Mapper;
 import com.lesotho.DaBase.services.AuthorsService;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -14,7 +16,7 @@ public class AuthorController {
 
     private final AuthorsService authorsService;
 
-    private Mapper<AuthorEntity, AuthorDto> authorMapper;
+    private final Mapper<AuthorEntity, AuthorDto> authorMapper;
 
 
     public AuthorController(AuthorsService authorsService, Mapper<AuthorEntity, AuthorDto> authorMapper) {
@@ -24,10 +26,10 @@ public class AuthorController {
 
 
     @PostMapping(path = "/authors")
-    public AuthorDto createAuthor(@RequestBody AuthorDto authorDto) {
+    public ResponseEntity<AuthorDto> createAuthor(@RequestBody AuthorDto authorDto) {
         AuthorEntity authorEntity = authorMapper.mapFrom(authorDto);
         AuthorEntity author = authorsService.createAuthor(authorEntity);
-        return authorMapper.mapTo(author);
+        return new ResponseEntity<>(authorMapper.mapTo(author), HttpStatus.CREATED);
     }
 
 

@@ -2,18 +2,17 @@ package com.lesotho.DaBase.domain.entities;
 
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
 @Table(name="book")
-@Data
 @Builder
+@Data
+@Getter
+@Setter
 public class BookEntity {
 
     @Id
@@ -24,4 +23,5 @@ public class BookEntity {
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "author_id")
     private AuthorEntity author;
+
 }

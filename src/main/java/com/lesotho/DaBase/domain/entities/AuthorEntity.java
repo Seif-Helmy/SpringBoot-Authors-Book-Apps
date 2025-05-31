@@ -9,8 +9,10 @@ import lombok.*;
 @NoArgsConstructor
 @Entity
 @Table(name = "authors")
-@Data
 @Builder
+@Data
+@Getter
+@Setter
 public class AuthorEntity {
 
     @Id
