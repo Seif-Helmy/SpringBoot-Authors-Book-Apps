@@ -2,9 +2,7 @@ package com.lesotho.DaBase.controllers;
 
 
 import com.lesotho.DaBase.domain.dto.AuthorDto;
-import com.lesotho.DaBase.domain.dto.BookDto;
 import com.lesotho.DaBase.domain.entities.AuthorEntity;
-import com.lesotho.DaBase.domain.entities.BookEntity;
 import com.lesotho.DaBase.mappers.Mapper;
 import com.lesotho.DaBase.services.AuthorsService;
 import org.springframework.http.HttpStatus;
@@ -32,7 +30,7 @@ public class AuthorController {
     @PostMapping(path = "/authors")
     public ResponseEntity<AuthorDto> createAuthor(@RequestBody AuthorDto authorDto) {
         AuthorEntity authorEntity = authorMapper.mapFrom(authorDto);
-        AuthorEntity author = authorsService.createAuthor(authorEntity);
+        AuthorEntity author = authorsService.save(authorEntity);
         return new ResponseEntity<>(authorMapper.mapTo(author), HttpStatus.CREATED);
     }
 
@@ -52,6 +50,23 @@ public class AuthorController {
         }).orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
 
     }
+
+    @PutMapping(path = "/authors/{id}")
+    public ResponseEntity<AuthorDto> fullUpdateAuthor(@PathVariable("id") Long id,
+                                                      @RequestBody AuthorDto authorDto) {
+
+        if(!authorsService.Exists(id)) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+
+        authorDto.setId(id);
+        AuthorEntity author = authorMapper.mapFrom(authorDto);
+        AuthorEntity authorEntity = authorsService.save(author);
+        AuthorDto returnedAuthor = authorMapper.mapTo(authorEntity);
+
+        return new ResponseEntity<>(returnedAuthor, HttpStatus.OK);
+    }
+
 
 
 }

@@ -32,7 +32,7 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
-    public Optional<BookEntity> findOne(String id) {
-        return bookRepository.findById(id);
+    public Optional<BookEntity> findOne(String isbn) {
+        return bookRepository.findById(isbn);
     }
 }

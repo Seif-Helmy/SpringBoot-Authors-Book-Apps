@@ -10,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @RestController
@@ -41,5 +42,17 @@ public class BookController {
         return books.stream().map(bookMapper::mapTo).collect(Collectors.toList());
 
     }
+
+
+    @GetMapping(path = "books/{isbn}")
+    public ResponseEntity<BookDto> getBook (@PathVariable("isbn") String isbn) {
+        Optional<BookEntity> foundBook = bookService.findOne(isbn);
+        return foundBook.map(book -> {
+            BookDto resultBook = bookMapper.mapTo(book);
+            return new ResponseEntity<>(resultBook, HttpStatus.OK);
+        }).orElse( new ResponseEntity<>(HttpStatus.NOT_FOUND));
+    }
+
+
 
 }

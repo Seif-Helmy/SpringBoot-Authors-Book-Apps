@@ -12,5 +12,5 @@ public interface BookService {
 
     List<BookEntity> findAll();
 
-    Optional<BookEntity> findOne(String id);
+    Optional<BookEntity> findOne(String isbn);
 }

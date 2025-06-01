@@ -1,6 +1,5 @@
 package com.lesotho.DaBase.controllers;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.lesotho.DaBase.TestDataUtil;
 import com.lesotho.DaBase.domain.entities.AuthorEntity;
@@ -14,7 +13,6 @@ import org.springframework.http.MediaType;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.assertj.MockMvcTester;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
@@ -87,7 +85,7 @@ public class AuthorControllerIntegrationTests {
     @Test
     public void thatThatListAuthorReturnsListOfAuthors() throws Exception {
         AuthorEntity author1 = TestDataUtil.createTestAuthor1();
-        authorsService.createAuthor(author1);
+        authorsService.save(author1);
 
         mockMvc.perform(
                 MockMvcRequestBuilders.get("/authors")
@@ -100,7 +98,7 @@ public class AuthorControllerIntegrationTests {
     @Test
     public void testThatGetAuthorReturnHttpStatus200WhenAuthorExists() throws Exception {
         AuthorEntity author1 = TestDataUtil.createTestAuthor1();
-        authorsService.createAuthor(author1);
+        authorsService.save(author1);
 
         mockMvc.perform(
                 MockMvcRequestBuilders.get("/authors/1")
