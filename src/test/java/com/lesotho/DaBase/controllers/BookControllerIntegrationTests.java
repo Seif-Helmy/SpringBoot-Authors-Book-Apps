@@ -85,7 +85,7 @@ public class BookControllerIntegrationTests {
     @Test
     public void testThatListsBooksReturnBooks() throws Exception {
         BookEntity bookEntity1 = TestDataUtil.createBook1(null);
-        bookService.createBook(bookEntity1.getIsbn(), bookEntity1);
+        bookService.save(bookEntity1.getIsbn(), bookEntity1);
 
         mockMvc.perform(
                 MockMvcRequestBuilders.get("/books")
@@ -98,7 +98,7 @@ public class BookControllerIntegrationTests {
     @Test
     public void testThatGetBookReturnHttpsStatus200WhenBookExists() throws Exception {
         BookEntity bookEntity1 = TestDataUtil.createBook1(null);
-        bookService.createBook(bookEntity1.getIsbn(), bookEntity1);
+        bookService.save(bookEntity1.getIsbn(), bookEntity1);
 
         mockMvc.perform(
                 MockMvcRequestBuilders.get("/books/" + bookEntity1.getIsbn() )
@@ -122,6 +122,91 @@ public class BookControllerIntegrationTests {
 
     }
 
+    @Test
+    public void testThatFullUpdateBookReturns200Http() throws Exception {
+        BookEntity bookEntity1 = TestDataUtil.createBook1(null);
+        BookEntity book1 = bookService.save(bookEntity1.getIsbn(), bookEntity1);
 
 
+        BookEntity bookEntity2 = TestDataUtil.createBook2(null);
+        bookEntity2.setIsbn(book1.getIsbn());
+        String bookJSON = objectMapper.writeValueAsString(bookEntity2);
+
+        mockMvc.perform(
+                MockMvcRequestBuilders.put("/books/" + bookEntity1.getIsbn())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(bookJSON)
+        ).andExpect(
+                MockMvcResultMatchers.status().isOk()
+        );
+
+    }
+
+    @Test
+    public void testThatFullUpdateBookReturnsUpdatedBook() throws Exception {
+        BookEntity bookEntity1 = TestDataUtil.createBook1(null);
+        BookEntity book1 = bookService.save(bookEntity1.getIsbn(), bookEntity1);
+
+
+        BookEntity bookEntity2 = TestDataUtil.createBook2(null);
+        bookEntity2.setIsbn(book1.getIsbn());
+        bookEntity2.setTitle("smoking on za");
+        String bookJSON = objectMapper.writeValueAsString(bookEntity2);
+
+        mockMvc.perform(
+                MockMvcRequestBuilders.put("/books/" + bookEntity1.getIsbn())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(bookJSON)
+        ).andExpect(
+                MockMvcResultMatchers.status().isOk()
+        ).andExpect(
+                MockMvcResultMatchers.jsonPath("$.title").value("smoking on za")
+        );
+
+    }
+
+    @Test
+    public void testPartialUpdateReturnsHttp200() throws Exception {
+        BookEntity bookEntity1 = TestDataUtil.createBook1(null);
+        BookEntity book1 = bookService.save(bookEntity1.getIsbn(), bookEntity1);
+
+
+        BookEntity bookEntity2 = TestDataUtil.createBook2(null);
+        bookEntity2.setTitle("UPDATED");
+        String bookJSON = objectMapper.writeValueAsString(bookEntity2);
+
+
+        mockMvc.perform(
+                MockMvcRequestBuilders.patch("/books/" + bookEntity1.getIsbn())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(bookJSON)
+        ).andExpect(
+                MockMvcResultMatchers.status().isOk()
+        );
+
+    }
+
+
+    @Test
+    public void testThatPartialUpdateBookReturnsUpdatedBook() throws Exception {
+        BookEntity bookEntity1 = TestDataUtil.createBook1(null);
+        BookEntity book1 = bookService.save(bookEntity1.getIsbn(), bookEntity1);
+
+
+        BookEntity bookEntity2 = TestDataUtil.createBook2(null);
+        bookEntity2.setIsbn(book1.getIsbn());
+        bookEntity2.setTitle("smoking on za");
+        String bookJSON = objectMapper.writeValueAsString(bookEntity2);
+
+        mockMvc.perform(
+                MockMvcRequestBuilders.patch("/books/" + bookEntity1.getIsbn())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(bookJSON)
+        ).andExpect(
+                MockMvcResultMatchers.status().isOk()
+        ).andExpect(
+                MockMvcResultMatchers.jsonPath("$.title").value("smoking on za")
+        );
+
+    }
 }
